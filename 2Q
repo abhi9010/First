@@ -1,1 +1,43 @@
+import json
+import platform
 
+
+def get_azure_instance_metadata():
+    from azure.identity import DefaultAzureCredential
+    from azure.mgmt.compute import ComputeManagementClient
+
+    subscription_id = 'YOUR_AZURE_SUBSCRIPTION_ID'
+    compute_client = ComputeManagementClient(
+        credential=DefaultAzureCredential(),
+        subscription_id=subscription_id
+    )
+
+    vm_list = list(compute_client.virtual_machines.list_all())
+    if vm_list:
+        vm = vm_list[0].as_dict()
+        return vm
+    return None
+
+
+
+def main():
+    cloud_provider = platform.system().lower()
+    if cloud_provider == 'linux':
+        cloud_provider = platform.linux_distribution()[0].lower()
+
+ 
+    if cloud_provider == 'azure':
+        instance_metadata = get_azure_instance_metadata()
+    
+    else:
+        print("Unsupported cloud provider.")
+        return
+
+    if instance_metadata:
+        json_output = json.dumps(instance_metadata, indent=2)
+        print(json_output)
+    else:
+        print(f"No instance metadata found on {cloud_provider}.")
+
+if _name_ == "_main_":
+    main()
