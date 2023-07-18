@@ -1,0 +1,20 @@
+def get_value_by_nested_key(obj, key):
+    keys = key.split('/')
+    current_obj = obj
+
+    for k in keys:
+        if isinstance(current_obj, dict) and k in current_obj:
+            current_obj = current_obj[k]
+        else:
+            return None
+
+    return current_obj
+
+# Test cases
+object1 = {"a": {"b": {"c": "d"}}}
+key1 = "a/b/c"
+result1 = get_value_by_nested_key(object1, key1)
+print(result1) 
+# Output: d
+
+ 
